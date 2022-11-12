@@ -52,7 +52,7 @@ class ReflexAgent(Agent):
 
         return legalMoves[chosenIndex]
 
-    def evaluationFunction(self, currentGameState:GameState, action):
+    def evaluationFunction(self, currentGameState: GameState, action):
         """
         The evaluation function takes in the current and proposed successor
         GameStates (pacman.py) and returns a number, where higher numbers are better.
@@ -69,25 +69,8 @@ class ReflexAgent(Agent):
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
-        score = 0
+        return successorGameState.getScore()
 
-        closestGhostPosition = newGhostStates[0].configuration.pos
-        closestGhost = manhattanDistance(newPos, closestGhostPosition)
-
-        # Minimize distance from pacman to food
-        newFoodPositions = newFood.asList()
-        foodDistances = [manhattanDistance(newPos, foodPosition) for foodPosition in newFoodPositions]
-
-        if len(foodDistances) == 0:
-            return 0
-
-        closestFood = min(foodDistances)
-
-        # Stop action would reduce score because of the pacman's timer constraint
-        if action == 'Stop':
-            score -= 50
-
-        return successorGameState.getScore() + closestGhost / (closestFood * 10) + score
 
 
 def scoreEvaluationFunction(currentGameState: GameState):
