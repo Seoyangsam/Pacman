@@ -128,39 +128,39 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns the total number of agents in the game
 
         gameState.isWin():
-        Returns whether or not the game state is a winning state
+        Returns whether the game state is a winning state
 
         gameState.isLose():
-        Returns whether or not the game state is a losing state
+        Returns whether the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
         numAgent = gameState.getNumAgents()
         ActionScore = []
 
-        def _rmStop(List):
+        def rmStop(List):
             return [x for x in List if x != 'Stop']
 
-        def _miniMax(s, iterCount):
+        def minimax(s, iterCount):
             if iterCount >= self.depth * numAgent or s.isWin() or s.isLose():
                 return self.evaluationFunction(s)
             if iterCount % numAgent != 0:  # Ghost min
                 result = 1e10
-                for a in _rmStop(s.getLegalActions(iterCount % numAgent)):
+                for a in rmStop(s.getLegalActions(iterCount % numAgent)):
                     sdot = s.generateSuccessor(iterCount % numAgent, a)
-                    result = min(result, _miniMax(sdot, iterCount + 1))
+                    result = min(result, minimax(sdot, iterCount + 1))
                 return result
             else:  # Pacman Max
                 result = -1e10
-                for a in _rmStop(s.getLegalActions(iterCount % numAgent)):
+                for a in rmStop(s.getLegalActions(iterCount % numAgent)):
                     sdot = s.generateSuccessor(iterCount % numAgent, a)
-                    result = max(result, _miniMax(sdot, iterCount + 1))
+                    result = max(result, minimax(sdot, iterCount + 1))
                     if iterCount == 0:
                         ActionScore.append(result)
                 return result
 
-        _miniMax(gameState, 0)
+        minimax(gameState, 0)
         # print _rmStop(gameState.getLegalActions(0)), ActionScore
-        return _rmStop(gameState.getLegalActions(0))[ActionScore.index(max(ActionScore))]
+        return rmStop(gameState.getLegalActions(0))[ActionScore.index(max(ActionScore))]
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
@@ -177,26 +177,26 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         numAgent = gameState.getNumAgents()
         ActionScore = []
 
-        def _rmStop(List):
+        def rmStop(List):
             return [x for x in List if x != 'Stop']
 
-        def _alphaBeta(s, iterCount, alpha, beta):
+        def alphabeta(s, iterCount, alpha, beta):
             if iterCount >= self.depth * numAgent or s.isWin() or s.isLose():
                 return self.evaluationFunction(s)
             if iterCount % numAgent != 0:  # Ghost min
                 result = 1e10
-                for a in _rmStop(s.getLegalActions(iterCount % numAgent)):
+                for a in rmStop(s.getLegalActions(iterCount % numAgent)):
                     sdot = s.generateSuccessor(iterCount % numAgent, a)
-                    result = min(result, _alphaBeta(sdot, iterCount + 1, alpha, beta))
+                    result = min(result, alphabeta(sdot, iterCount + 1, alpha, beta))
                     beta = min(beta, result)
                     if beta < alpha:
                         break
                 return result
             else:  # Pacman Max
                 result = -1e10
-                for a in _rmStop(s.getLegalActions(iterCount % numAgent)):
+                for a in rmStop(s.getLegalActions(iterCount % numAgent)):
                     sdot = s.generateSuccessor(iterCount % numAgent, a)
-                    result = max(result, _alphaBeta(sdot, iterCount + 1, alpha, beta))
+                    result = max(result, alphabeta(sdot, iterCount + 1, alpha, beta))
                     alpha = max(alpha, result)
                     if iterCount == 0:
                         ActionScore.append(result)
@@ -204,8 +204,8 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                         break
                 return result
 
-        _alphaBeta(gameState, 0, -1e20, 1e20)
-        return _rmStop(gameState.getLegalActions(0))[ActionScore.index(max(ActionScore))]
+        alphabeta(gameState, 0, -1e20, 1e20)
+        return rmStop(gameState.getLegalActions(0))[ActionScore.index(max(ActionScore))]
 
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
@@ -224,28 +224,28 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         numAgent = gameState.getNumAgents()
         ActionScore = []
 
-        def _rmStop(List):
+        def rmStop(List):
             return [x for x in List if x != 'Stop']
 
-        def _expectMinimax(s, iterCount):
+        def expectimax(s, iterCount):
             if iterCount >= self.depth * numAgent or s.isWin() or s.isLose():
                 return self.evaluationFunction(s)
             if iterCount % numAgent != 0:  # Ghost min
                 successorScore = []
-                for a in _rmStop(s.getLegalActions(iterCount % numAgent)):
+                for a in rmStop(s.getLegalActions(iterCount % numAgent)):
                     sdot = s.generateSuccessor(iterCount % numAgent, a)
-                    result = _expectMinimax(sdot, iterCount + 1)
+                    result = expectimax(sdot, iterCount + 1)
                     successorScore.append(result)
                 averageScore = sum([float(x) / len(successorScore) for x in successorScore])
                 return averageScore
             else:  # Pacman Max
                 result = -1e10
-                for a in _rmStop(s.getLegalActions(iterCount % numAgent)):
+                for a in rmStop(s.getLegalActions(iterCount % numAgent)):
                     sdot = s.generateSuccessor(iterCount % numAgent, a)
-                    result = max(result, _expectMinimax(sdot, iterCount + 1))
+                    result = max(result, expectimax(sdot, iterCount + 1))
                     if iterCount == 0:
                         ActionScore.append(result)
                 return result
 
-        _expectMinimax(gameState, 0)
-        return _rmStop(gameState.getLegalActions(0))[ActionScore.index(max(ActionScore))]
+        expectimax(gameState, 0)
+        return rmStop(gameState.getLegalActions(0))[ActionScore.index(max(ActionScore))]
