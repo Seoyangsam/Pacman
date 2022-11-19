@@ -159,7 +159,6 @@ class MinimaxAgent(MultiAgentSearchAgent):
                 return result
 
         minimax(gameState, 0)
-        # print _rmStop(gameState.getLegalActions(0)), ActionScore
         return rmStop(gameState.getLegalActions(0))[ActionScore.index(max(ActionScore))]
 
 
